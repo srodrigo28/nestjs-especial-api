@@ -70,6 +70,17 @@ model Task{
 npx prisma migrate dev
 ```
 
+#### Criando modulo Prisma
+```
+nest g module prisma --no-spec
+```
+
+```
+nest g service prisma --no-spec
+```
+
+npm install class-transformer class-validator
+
 #### Multer Uploads
     npm install --save-dev @types/multer
     npm install --save @nestjs/serve-static

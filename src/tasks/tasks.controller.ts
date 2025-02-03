@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, ParseFilePipeBuilder, Patch, Post, Query, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseFilePipeBuilder, Patch, Post, Put, Query, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { UpdateTaskDTO } from './dto/update-task.dto';
 import { CreateTaskDTO } from './dto/create-task.dto';
@@ -8,6 +8,8 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises'
 import { randomUUID } from 'node:crypto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { LoggerInterceptor } from 'src/common/interceptiors/logger.interceptor';
 /** End Uploads de imagens : ) */
 
 export interface ITarefa{
@@ -16,6 +18,7 @@ export interface ITarefa{
 }
 
 @Controller('tasks')
+@UseInterceptors(LoggerInterceptor)
 export class TasksController {
     constructor(private readonly taskService: TasksService){}
 
@@ -23,20 +26,25 @@ export class TasksController {
     getTasks(@Query() queryParam: ITarefa){
         return this.taskService.findAll()
     }
-
+    
     @Get("all")
     getTasks2(){
         return this.taskService.findAll()
     }
 
+    @Get("pagination")
+    getTasks3(@Query() paginationDto: PaginationDto){
+        return this.taskService.findAllPagination(paginationDto)
+    }
+
     @Get(":id")
-    gindOne(@Param('id') id: string ){
+    gindOne(@Param('id') id: number ){
         return this.taskService.findOneTask(id)
     }
 
     @Post()
-    createTask(@Body() taskBody: CreateTaskDTO){
-        return this.taskService.create(taskBody) 
+    createTask(@Body() createTaskDto: CreateTaskDTO){
+        return this.taskService.create(createTaskDto) 
     }
 
     @UseInterceptors(FileInterceptor('file'))
@@ -92,11 +100,12 @@ export class TasksController {
 
     @Patch(":id")
     updateTask( @Param("id") id: string, @Body() updateTask: UpdateTaskDTO ) {
-        return this.taskService.updated(id, updateTask)
+        // return "Update: OK"
+        return this.taskService.updatedTask(Number(id), updateTask)
     }
 
     @Delete(":id")
     deleteTask(@Param("id") id: string){
-        return this.taskService.delete(id)
+        return this.taskService.deleteTask(Number(id))
     }
 }
