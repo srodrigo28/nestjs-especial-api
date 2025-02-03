@@ -10,6 +10,8 @@ import * as fs from 'node:fs/promises'
 import { randomUUID } from 'node:crypto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { LoggerInterceptor } from 'src/common/interceptiors/logger.interceptor';
+import { BodyCreateTaskInterceptor } from 'src/common/interceptiors/body-create-task.interceptor';
+import { AddHeaderInterceptor } from 'src/common/interceptiors/add-header.interceptor';
 /** End Uploads de imagens : ) */
 
 export interface ITarefa{
@@ -19,9 +21,10 @@ export interface ITarefa{
 
 @Controller('tasks')
 @UseInterceptors(LoggerInterceptor)
+@UseInterceptors(AddHeaderInterceptor)
 export class TasksController {
     constructor(private readonly taskService: TasksService){}
-
+    
     @Get()
     getTasks(@Query() queryParam: ITarefa){
         return this.taskService.findAll()
@@ -43,6 +46,7 @@ export class TasksController {
     }
 
     @Post()
+    @UseInterceptors(BodyCreateTaskInterceptor)
     createTask(@Body() createTaskDto: CreateTaskDTO){
         return this.taskService.create(createTaskDto) 
     }

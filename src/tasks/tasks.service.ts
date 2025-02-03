@@ -14,7 +14,7 @@ export class TasksService {
     
     async findAll(){
         const allTasks = await this.prisma.task.findMany({
-            orderBy: { name: "asc" }
+            orderBy: { name: "desc" }
         });
 
         if ( allTasks.length > 0 ) return allTasks;
