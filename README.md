@@ -1,6 +1,9 @@
 ### Projeto Nest Api + Doc Exercicio
 
 #### Screens do projeto 
+
+<img src="./screens/Api.png" alt="api swagger">
+
 #### Principais comandos
     ```
     nest -help
